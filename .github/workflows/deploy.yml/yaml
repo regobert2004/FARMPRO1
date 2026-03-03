@@ -1,0 +1,34 @@
+name: Deploy FarmPro
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+
+      - name: Build Backend
+        run: docker build -t farmpro/backend ./backend
+
+      - name: Build Frontend
+        run: docker build -t farmpro/frontend ./frontend
+
+      - name: Push Images
+        run: |
+          docker push farmpro/backend
+          docker push farmpro/frontend
+
+      - name: Deploy to AWS ECS
+        run: |
+          aws ecs update-service \
+            --cluster farmpro-cluster \
+            --service farmpro-service \
+            --force-new-deployment

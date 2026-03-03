@@ -1,0 +1,29 @@
+backend/
+├── src/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── productController.js
+│   │   ├── orderController.js
+│   │   └── adminController.js
+│   ├── models/
+│   │   ├── userModel.js
+│   │   ├── productModel.js
+│   │   └── orderModel.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── productRoutes.js
+│   │   ├── orderRoutes.js
+│   │   └── adminRoutes.js
+│   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   ├── errorHandler.js
+│   │   └── validateInput.js
+│   ├── utils/
+│   │   └── helpers.js
+│   ├── config/
+│   │   └── db.js
+│   └── app.js
+├── package.json
+├── package-lock.json
+├── Dockerfile
+└── .env.production

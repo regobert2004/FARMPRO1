@@ -1,0 +1,11 @@
+const Flutterwave = require("flutterwave-node-v3");
+const flw = new Flutterwave(process.env.FLW_PUBLIC, process.env.FLW_SECRET);
+
+const payment = await flw.MobileMoney.cm({
+  tx_ref: "FARMPRO-" + Date.now(),
+  amount: 5000,
+  currency: "XAF",
+  email: "buyer@email.com",
+  phone_number: "6XXXXXXXX",
+  fullname: "Buyer Name"
+});

@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: farmpro_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: farmpro
+      POSTGRES_USER: farmpro_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - farmpro_network
+
+  backend:
+    build: ./backend
+    container_name: farmpro_backend
+    restart: always
+    env_file:
+      - ./backend/.env.production
+    depends_on:
+      - postgres
+    networks:
+      - farmpro_network
+
+  frontend:
+    build: ./frontend
+    container_name: farmpro_frontend
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - farmpro_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: farmpro_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - farmpro_network
+
+volumes:
+  postgres_data:
+
+networks:
+  farmpro_network:
+    driver: bridge
