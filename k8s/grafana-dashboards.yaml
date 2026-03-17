@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  farmpro-dashboard.json: |
+    {
+      "id": null,
+      "title": "FarmPro Overview",
+      "tags": ["FarmPro", "CV"],
+      "timezone": "browser",
+      "panels": [
+        {
+          "type": "graph",
+          "title": "CPU Usage",
+          "targets": [
+            {
+              "expr": "rate(container_cpu_usage_seconds_total{pod=~\"farmpro-backend.*\"}[1m])",
+              "legendFormat": "{{pod}}"
+            }
+          ]
+        },
+        {
+          "type": "graph",
+          "title": "Memory Usage",
+          "targets": [
+            {
+              "expr": "container_memory_usage_bytes{pod=~\"farmpro-backend.*\"}",
+              "legendFormat": "{{pod}}"
+            }
+          ]
+        }
+      ]
+    }

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: farmpro-backend
+  namespace: monitoring
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: farmpro-backend
+  template:
+    metadata:
+      labels:
+        app: farmpro-backend
+    spec:
+      containers:
+      - name: backend
+        image: regobert2004/farmpro:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: farmpro-backend
+  namespace: monitoring
+spec:
+  selector:
+    app: farmpro-backend
+  ports:
+    - port: 80
+      targetPort: 3000
