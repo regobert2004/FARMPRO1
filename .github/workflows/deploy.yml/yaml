@@ -1,34 +1,37 @@
-name: Deploy FarmPro
+name: Build and Push to ECR
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "ngwa" ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
 
-      - name: Build Backend
-        run: docker build -t farmpro/backend ./backend
+      - name: Login to ECR
+        uses: docker/login-action@v2
+        with:
+          ecr: auto
 
-      - name: Build Frontend
-        run: docker build -t farmpro/frontend ./frontend
-
-      - name: Push Images
+      - name: Build Docker image
         run: |
-          docker push farmpro/backend
-          docker push farmpro/frontend
+          docker build -t my-app .
 
-      - name: Deploy to AWS ECS
+      - name: Tag image
         run: |
-          aws ecs update-service \
-            --cluster farmpro-cluster \
-            --service farmpro-service \
-            --force-new-deployment
+          docker tag my-app:latest 123456789012.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-app:latest
+
+      - name: Push image
+        run: |
+          docker push 123456789012.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-app:latest

@@ -1,0 +1,18 @@
+# FarmPro Monitoring System
+
+This project implements a full monitoring stack using Prometheus and Grafana on Kubernetes.
+
+## Features
+- Real-time metrics collection (Prometheus)
+- Visualization dashboards (Grafana)
+- Kubernetes deployment
+- Microservices monitoring
+
+## Tech Stack
+- Kubernetes
+- Docker
+- Prometheus
+- Grafana
+
+## Architecture
+App → Prometheus → Grafana → Alerts
